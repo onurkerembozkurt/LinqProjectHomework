@@ -23,6 +23,75 @@ namespace LinqProject
 
             };
             //Algoritmik
+            //TestMethod(products);
+            //-----------------------
+            //Linq'Methods
+            /*Single line queary
+             * FindMethod(products);
+             AnyMethod(products);
+             FindAllMethod(products);
+             WhereOrderByAsc(products);
+             AscAscWhereOrderby(products);
+             ClassicLinqTest(products);
+            */
+            var result = from p in products
+                         join c in categories
+                         on p.CategoryId equals c.CategoryId
+                         where p.UnitPrice>5000
+                         orderby p.UnitPrice descending
+      select new ProductDto {ProductId=p.ProductId,CategoryName=c.CategoryName,ProductName=p.ProductName,UnitPrice=p.UnitPrice };
+            foreach (var productDTO in result)
+            {
+                Console.WriteLine(productDTO.ProductName+" "+productDTO.CategoryName);
+            }
+        }
+
+        private static void ClassicLinqTest(List<Product> products)
+        {
+            var result = from p in products
+                         where p.UnitPrice > 6000
+                         orderby p.UnitPrice
+                         select new ProductDto { ProductId = p.ProductId, ProductName = p.ProductName, UnitPrice = p.UnitPrice };
+            foreach (var item in result)
+            {
+                Console.WriteLine(item);
+            }
+        }
+
+        private static void AscAscWhereOrderby(List<Product> products)
+        {
+            var result = products.Where(p => p.ProductName.Contains("top")).OrderByDescending(p => p.UnitPrice).ThenBy(p => p.ProductName);
+        }
+
+        private static void WhereOrderByAsc(List<Product> products)
+        {
+            var result = products.Where(p => p.ProductName.Contains("top")).OrderBy(p => p.UnitPrice);
+            foreach (var item in result)
+            {
+                Console.WriteLine(item.ProductName);
+            }
+        }
+
+        private static void FindAllMethod(List<Product> products)
+        {
+            var result = products.FindAll(p => p.ProductName.Contains("top"));
+            Console.WriteLine(result);
+        }
+
+        private static void AnyMethod(List<Product> products)
+        {
+            var result = products.Any(p => p.ProductName == "Acer Laptop");
+            Console.WriteLine(result);
+        }
+
+        private static void FindMethod(List<Product> products)
+        {
+            var result = products.Find(p => p.ProductId == 15);
+            Console.WriteLine(result.ProductName);
+        }
+
+        private static void TestMethod(List<Product> products)
+        {
             foreach (var product in products)
             {
                 if (product.UnitPrice > 5000 && product.UnitsInStock > 3)
@@ -31,7 +100,7 @@ namespace LinqProject
 
             //Linq
 
-            var result = products.Where(p=>p.UnitPrice>5000&&p.UnitsInStock>3);
+            var result = products.Where(p => p.UnitPrice > 5000 && p.UnitsInStock > 3);
 
             foreach (var product in result)
             {
@@ -39,6 +108,7 @@ namespace LinqProject
             }
             GetProducts(products);
         }
+
         static List<Product> GetProducts(List<Product> products)
         {
             List<Product> filteredProducts = new List<Product>();
@@ -58,5 +128,11 @@ namespace LinqProject
            return products.Where(p => p.UnitPrice > 5000 && p.UnitsInStock > 3).ToList();
         }
     }
-   
+   class ProductDto
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string CategoryName { get; set; }
+        public decimal UnitPrice { get; set; }
+    }
 }
